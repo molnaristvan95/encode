@@ -81,7 +81,7 @@
 </head>
 
 <body id="main">
-  <div id="mainString" contenteditable="true">Ez egy tesztszöveg. Magyar olvashatóságot igazol vissza.</div>
+  <div id="mainString" ondblclick="navigator.clipboard.readText(this.innerText)" contenteditable="true">Ez egy tesztszöveg. Magyar olvashatóságot igazol vissza.</div>
   <div id="errors"></div>
   <button id="coding" type="button">Encode</button>
   <div id="t9encode" onclick="navigator.clipboard.writeText(this.innerText)"></div>
