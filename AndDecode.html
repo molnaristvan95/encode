@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="description" content="Make your message secure by encode it!">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Molnár István || Мельник Степан">
+  <meta name="keywords" content="">
+  <meta name="theme-color" content="#050">
+  <title>Encode n Decode String</title>
+  <style rel="stylesheet" type="text/css">
+    *:root {
+      font-size: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      color: #ffab;
+      margin: 8px auto 0;
+    }
+
+    body#main {
+      margin: 0;
+      background: #000;
+      padding: 0;
+    }
+
+    div {
+      word-break: break-all;
+      word-wrap: break-word;
+    }
+
+    div#mainString {
+      border: 1px solid #077;
+      min-height: 3rem;
+      padding: 16px;
+      width: 95%;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      word-spacing: 2px;
+    }
+
+    div#errors {
+      min-height: 1rem;
+      background: #f999;
+      border: 1px solid red;
+      width: 45%;
+      margin-left: 5%;
+      color: #ffa;
+    }
+
+    div#errors::before {
+      content: attr(id);
+      position: relative;
+      left: -3rem;
+      color: #f99;
+    }
+
+    button#coding {
+      background: gray;
+      zoom: 2;
+      display: block;
+      border-radius: 4px;
+    }
+
+    div[id*="t9"] {
+      min-height: 10rem;
+      border: 1px solid red;
+      background: linear-gradient(135deg, orange 0%, #0000 7% 100%);
+    }
+
+    div[id*="t9"]::before {
+      content: attr(id);
+      position: relative;
+      top: -1rem;
+    }
+
+  </style>
+</head>
+
+<body id="main">
+  <div id="mainString" contenteditable="true">Ez egy tesztszöveg. Magyar olvashatóságot igazol vissza.</div>
+  <div id="errors"></div>
+  <button id="coding" type="button">Encode</button>
+  <div id="t9encode" onclick="navigator.clipboard.writeText(this.innerText)"></div>
+  <div id="t9decode" onclick="navigator.clipboard.writeText(this.innerText)"></div>
+  <script type="text/javascript">
+    console.clear();
+    // data input
+    const id = (i) => {
+        return document.getElementById(i);
+      },
+      abc = 'abcádeféghiíjklmnoóöőpqrstuvúűwxyz',
+      ABC = abc.toUpperCase(),
+      caracters = '.,!?"/-+*#',
+      changeLetter = (target, inp, out) => {
+        let converted = '';
+        for (let a = 0; a < target.innerText.length; a++) {
+          if (target.innerText[a] == inp) {
+            converted += out;
+          } else {
+            converted += target.innerText[a];
+          }
+        }
+        target.innerText = converted;
+      },
+      encoder = (rawIn, converted, coderObj, loopPlus, objectLen) => {
+        let faults = '',
+          code = '',
+          len = rawIn.innerText.length;
+        for (let c = 0; c < len; c += loopPlus) {
+          let boolean = false;
+          for (let d = 0; d < objectLen; d++) {
+            if (rawIn.innerText[c] == Object.keys(coderObj)[d] && boolean === false) {
+              code += Object.values(coderObj)[d];
+              boolean = true;
+            } else {
+              if (boolean === false && d == (objectLen - 1)) {
+                faults += rawIn.innerText[c] + ' ';
+                code += '00';
+                boolean = true;
+              }
+            }
+          }
+        }
+        converted.innerText = code;
+        id('errors').innerText = faults;
+      },
+      decoder = (rawIn, converted, coderObj, loopPlus, objectLen) => {
+        let faults = '',
+          code = '',
+          len = rawIn.innerText.length;
+        for (let c = 0; c < len; c += loopPlus) {
+          let boolean = false;
+          let actualNums = (rawIn.innerText[c] + '' + rawIn.innerText[c + 1]);
+          for (let d = 0; d < objectLen; d++) {
+            if (actualNums == Object.values(coderObj)[d] && boolean === false) {
+              code += Object.keys(coderObj)[d];
+              boolean = true;
+            } else if (boolean === false && d == (objectLen - 1)) {
+              faults += rawIn.innerText[c] + ' ';
+              code += '¿';
+              boolean = true;
+            }
+          }
+        }
+        converted.innerText = code;
+        id('errors').innerText = faults;
+      };
+
+    // targeted function
+
+    var techNine = {
+      ' ': '39',
+      'a': '21',
+      'b': '22',
+      'c': '23',
+      'á': '24',
+      'd': '31',
+      'e': '32',
+      'f': '33',
+      'é': '34',
+      'g': '41',
+      'h': '42',
+      'i': '43',
+      'í': '44',
+      'j': '51',
+      'k': '52',
+      'l': '53',
+      'm': '61',
+      'n': '62',
+      'o': '63',
+      'ó': '64',
+      'ö': '65',
+      'ő': '66',
+      'p': '71',
+      'q': '72',
+      'r': '73',
+      's': '74',
+      't': '81',
+      'u': '82',
+      'v': '83',
+      'ú': '84',
+      'ű': '85',
+      'w': '91',
+      'x': '92',
+      'y': '93',
+      'z': '94',
+      '.': '11',
+      ',': '12',
+      '!': '13',
+      '?': '14',
+      '"': '15',
+      '/': '16',
+      '-': '17',
+      '+': '18',
+      '*': '19',
+      '#': '10',
+      '0': '25',
+      '1': '26',
+      '2': '27',
+      '3': '28',
+      '4': '29',
+      '5': '30',
+      '6': '35',
+      '7': '36',
+      '8': '37',
+      '9': '38',
+    };
+
+    // callBack
+    //changeLetter(id('mainString'), 'á', 'a');
+    //    encoder = (rawIn, converted, coderObj, loopPlus, objectLen)
+    id('coding').addEventListener('click', () => {
+      let low = id('mainString').innerText.toLowerCase();
+      id('mainString').innerText = low;
+      encoder(id('mainString'), id('t9encode'), techNine, 1, 54);
+      decoder(id('mainString'), id('t9decode'), techNine, 2, 54);
+    });
+
+  </script>
+</body>
+
+</html>
